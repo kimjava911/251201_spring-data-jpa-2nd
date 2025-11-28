@@ -22,4 +22,25 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
 
    // UserLogin - id
    Optional<UserInfo> findByUserLoginId(Long loginId);
+
+   // 작성한 게시글 목록
+    @Query(
+            """
+            SELECT DISTINCT ui FROM UserInfo ui
+                JOIN FETCH ui.posts
+            WHERE ui.id = :authorId
+            """
+    )
+    UserInfo findAuthorWithPosts(@Param("authorId") Long authorId);
+
+   // 좋아요한 게시글 목록
+   @Query(
+           """
+           SELECT DISTINCT ui FROM UserInfo ui
+               JOIN FETCH ui.postLikes pl
+               JOIN FETCH pl.post
+           WHERE ui.id = :userId
+           """
+   )
+   UserInfo findAuthorWithLikedPosts(@Param("userId") Long userId);
 }

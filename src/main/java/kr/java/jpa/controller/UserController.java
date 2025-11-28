@@ -5,6 +5,7 @@ import kr.java.jpa.model.entity.UserInfo;
 import kr.java.jpa.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+
+    @GetMapping("/profile")
+    public String profile(HttpSession session, Model model) {
+        UserInfo loginUser = (UserInfo) session.getAttribute("userInfo");
+        if (loginUser == null) return "redirect:/login";
+        model.addAttribute("withPosts", userService.getUserInfoWithPosts(loginUser.getId()));
+        model.addAttribute("withLikedPosts", userService.getUserInfoWithLikedPosts(loginUser.getId()));
+        return "profile";
+    }
 
     @GetMapping("/register")
     public String registerForm() {

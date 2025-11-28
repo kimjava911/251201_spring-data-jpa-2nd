@@ -68,4 +68,12 @@ public class UserService {
         return userInfoRepository.findByIdWithLogin(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다"));
     }
+
+    public UserInfo getUserInfoWithPosts(Long id) {
+        return userInfoRepository.findAuthorWithPosts(id);
+    }
+
+    public UserInfo getUserInfoWithLikedPosts(Long id) {
+        return userInfoRepository.findAuthorWithLikedPosts(id);
+    }
 }

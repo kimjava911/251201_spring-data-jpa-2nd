@@ -14,6 +14,7 @@
         <a href="<%= request.getContextPath() %>/login">로그인</a><br>
     <% } else { %>
         <a href="<%= request.getContextPath() %>/logout">로그아웃</a><br>
+        <a href="<%= request.getContextPath() %>/profile">프로필</a><br>
         <p> 별명 : <%= ui.getNickname() %> </p>
         <a href="<%= request.getContextPath() %>/posts">글 목록</a><br>
         <a href="<%= request.getContextPath() %>/posts/new">글 작성</a><br>
