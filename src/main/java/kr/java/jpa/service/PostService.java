@@ -73,6 +73,6 @@ public class PostService {
 
     public boolean isLiked(Long userInfoId, Long postId) {
         return postLikeRepository
-                .existsUserInfoIdAndPostId(userInfoId, postId);
+                .existsByUserInfoIdAndPostId(userInfoId, postId);
     }
 }
