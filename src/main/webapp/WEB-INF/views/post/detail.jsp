@@ -1,6 +1,5 @@
 <%@ page import="kr.java.jpa.model.entity.UserInfo" %>
 <%@ page import="kr.java.jpa.model.entity.Post" %>
-<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -17,23 +16,21 @@
         <p> 별명 : <%= ui.getNickname() %> </p>
     </nav>
 
-    <form action="<%= request.getContextPath() %>/posts/search">
-        <input name="keyword" placeholder="keyword">
-        <button>검색</button>
-    </form>
-
-    <% List<Post> posts = (List<Post>) request.getAttribute("posts");
-        for (Post p : posts) {
-    %>
+    <% Post p = (Post) request.getAttribute("post"); %>
         <div>
             <p>제목 : <%= p.getTitle() %></p>
             <p>작성자 : <%= p.getAuthor().getNickname() %></p>
             <p>내용 : <%= p.getContent() %></p>
-            <a href="<%= request.getContextPath() %>/posts/<%= p.getId() %>">자세히보기</a>
-            <hr>
+            <p>작성일시 : <%= p.getCreatedAt() %></p>
+            <p>좋아요 수 : <%= p.getLikeCount() %></p>
+            <p>좋아요한 사람들 : <%= p.getPostLikeList().stream()
+                    .map((li) -> li.getUserInfo().getNickname()).toList() %></p>
+            <form action="<%= request.getContextPath() %>/posts/<%= p.getId() %>/like" method="post">
+                <button>
+                    <% boolean isLiked = (boolean) request.getAttribute("isLiked"); %>
+                    <%= isLiked ? "좋아요 취소" : "좋아요" %>
+                </button>
+            </form>
         </div>
-    <%
-        }
-    %>
 </body>
 </html>

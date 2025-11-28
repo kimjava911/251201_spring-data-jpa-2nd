@@ -56,6 +56,9 @@ public class Post {
 
     // 비즈니스 로직 (count)
     public void increaseLikeCount() {
+        if (likeCount == null) {
+            likeCount = 0;
+        }
         this.likeCount++;
     }
 

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor // 필수 생성자를 자동으로 만들어지게
@@ -35,6 +36,7 @@ public class PostService {
         Post post = Post.builder()
                 .title(title)
                 .content(content)
+                .likeCount(0)
                 .build();
         post.setAuthor(author); // 연관관계 편의 메서드
         Post savedPost = postRepository.save(post);
@@ -74,5 +76,11 @@ public class PostService {
     public boolean isLiked(Long userInfoId, Long postId) {
         return postLikeRepository
                 .existsByUserInfoIdAndPostId(userInfoId, postId);
+    }
+
+    // 게시글 상세조회
+    public Post getPostDetail(Long id) {
+        return  postRepository.findByIdWithDetails(id)
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
     }
 }
