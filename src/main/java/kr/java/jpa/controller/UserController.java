@@ -82,4 +82,40 @@ public class UserController {
     public String index() {
         return "index";
     }
+
+    // 1. 사용자 검색 페이지
+    @GetMapping("/users/search")
+    public String searchUsers(
+            HttpSession session,
+            @RequestParam(required = false) String keyword,
+            Model model
+    ) {
+        UserInfo loginUser = (UserInfo) session.getAttribute("userInfo");
+        if (loginUser == null) return "redirect:/login";
+
+        // 키워드가 있으면 검색, 없으면 빈 리스트
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            model.addAttribute("users",
+                    userService.searchUsersByNickname(keyword));
+        }
+        model.addAttribute("userInfo", loginUser);
+        return "users/search";
+    }
+
+    // 2. 활성 사용자 목록
+    @GetMapping("/users/active")
+    public String activeUsers(
+            HttpSession session,
+            @RequestParam(defaultValue = "3") int minPosts,
+            Model model
+    ) {
+        UserInfo loginUser = (UserInfo) session.getAttribute("userInfo");
+        if (loginUser == null) return "redirect:/login";
+
+        // 최소 게시글 수 이상인 활동적인 사용자 조회
+        model.addAttribute("users", userService.getActiveUsers(minPosts));
+        model.addAttribute("userInfo", loginUser);
+        model.addAttribute("minPosts", minPosts);
+        return "users/active";
+    }
 }
