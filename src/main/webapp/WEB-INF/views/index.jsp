@@ -18,7 +18,6 @@
 <a href="<%= request.getContextPath() %>/posts">전체 글 목록</a><br>
 <a href="<%= request.getContextPath() %>/posts/new">글 작성</a><br>
 <a href="<%= request.getContextPath() %>/posts/popular">인기 게시글</a><br>
-
 <h3>사용자 관련</h3>
 <a href="<%= request.getContextPath() %>/profile">내 프로필</a><br>
 <a href="<%= request.getContextPath() %>/users/search">사용자 검색</a><br>
