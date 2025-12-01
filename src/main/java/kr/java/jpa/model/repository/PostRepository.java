@@ -2,6 +2,8 @@ package kr.java.jpa.model.repository;
 
 import kr.java.jpa.model.entity.Post;
 import kr.java.jpa.model.entity.UserLogin;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +14,21 @@ import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
 
+    // Paging
+    // import org.springframework.data.domain.Page;
+
+    // 전체 게시글 조회
+    @Query("SELECT p FROM Post p JOIN FETCH p.author ORDER BY p.createdAt DESC")
+    Page<Post> findAllWithAuthor(Pageable pageable); // 오버로딩
+
+    // 제목 검색 + 페이징
+    Page<Post> findByTitleContaining(String keyword, Pageable pageable);
+
+    // 작성자별 게시글 + 페이징
+    Page<Post> findByAuthorId(Long authorId, Pageable pageable);
+
     // 게시글 목록 조회 (작성자 정보 포함)
+    // 현재 전체를 조회하고 있음
     @Query("SELECT p FROM Post p JOIN FETCH p.author ORDER BY p.createdAt DESC")
     List<Post> findAllWithAuthor();
 

@@ -9,6 +9,10 @@ import kr.java.jpa.model.repository.PostRepository;
 import kr.java.jpa.model.repository.UserInfoRepository;
 import kr.java.jpa.model.repository.UserLoginRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +26,41 @@ import java.util.Optional;
 public class PostService {
     private final UserInfoRepository userInfoRepository;
     private final PostRepository postRepository;
+
+    // 1. 페이징된 게시글 목록 조회
+    public Page<Post> getPostsPage(int page, int size, String sortBy, String direction) {
+        // Sort 객체 생성 (정렬 기준과 방향)
+        // equalsIgnoreCase -> 대소문자 구분 X
+        Sort sort = direction.equalsIgnoreCase("asc") ?
+                Sort.by(sortBy).ascending() :
+                Sort.by(sortBy).descending(); // 기본설정을 이걸로 두겠다
+        // ID 기준
+
+        // Pageable 객체 생성 (페이지 번호, 크기, 정렬)
+        Pageable pageable = PageRequest.of(page, size, sort);
+        // page : 나눠진 chunk -> 몇 번째 묶음을 불러오겠냐
+        // size : 몇 개씩 나누겠냐
+
+        // 페이징 쿼리 실행
+        return postRepository.findAllWithAuthor(pageable);
+    }
+
+    // 2. 검색 + 페이징
+    public Page<Post> searchPostsPage(String keyword, int page, int size) {
+        // 기본 정렬: 최신순
+        Pageable pageable = PageRequest.of(page, size,
+                Sort.by("createdAt").descending());
+        // Sort.by -> attribute 지정
+        return postRepository.findByTitleContaining(keyword, pageable);
+    }
+
+    // 3. 사용자별 게시글 + 페이징
+    public Page<Post> getUserPostsPage(Long userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size,
+                Sort.by("createdAt").descending());
+        return postRepository.findByAuthorId(userId, pageable);
+    }
+
 
 //    게시글 목록 조회 (N:1)
     public List<Post> getAllPosts() {
