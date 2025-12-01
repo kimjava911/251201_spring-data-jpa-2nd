@@ -184,4 +184,51 @@ public class PostController {
 
         return "post/search-paging";
     }
+
+
+    // 1. 게시글 수정 폼
+    @GetMapping("/{id}/edit")
+    public String editForm(
+            @PathVariable Long id,
+            HttpSession session,
+            Model model
+    ) {
+        UserInfo loginUser = (UserInfo) session.getAttribute("userInfo");
+        if (loginUser == null) return "redirect:/login";
+
+        Post post = postService.getPostDetail(id);
+
+        // 작성자만 수정 가능
+        if (!post.getAuthor().getId().equals(loginUser.getId())) {
+            return "redirect:/posts/" + id;
+        }
+
+        model.addAttribute("post", post);
+        model.addAttribute("userInfo", loginUser);
+        return "post/edit";
+    }
+
+    // 2. 게시글 수정 처리
+    @PostMapping("/{id}/edit")
+    public String edit(
+            @PathVariable Long id,
+            @RequestParam String title,
+            @RequestParam String content,
+            HttpSession session
+    ) {
+        UserInfo loginUser = (UserInfo) session.getAttribute("userInfo");
+        if (loginUser == null) return "redirect:/login";
+
+        Post post = postService.getPostDetail(id);
+
+        // 작성자만 수정 가능
+        if (!post.getAuthor().getId().equals(loginUser.getId())) {
+            return "redirect:/posts/" + id;
+        }
+
+        // 수정 처리 - updatedAt과 updatedBy가 자동으로 업데이트됨
+        postService.updatePost(id, title, content);
+
+        return "redirect:/posts/" + id;
+    }
 }

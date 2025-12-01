@@ -27,6 +27,27 @@ public class PostService {
     private final UserInfoRepository userInfoRepository;
     private final PostRepository postRepository;
 
+    // 1. 게시글 수정 (Audit 테스트용)
+    @Transactional
+    public void updatePost(Long postId, String title, String content) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다"));
+
+        // 제목과 내용 수정
+        post.setTitle(title);
+        post.setContent(content);
+
+        // save 호출하지 않아도 됨 - Dirty Checking으로 자동 업데이트
+        // updatedAt과 updatedBy는 자동으로 현재 시간과 사용자로 업데이트됨
+    }
+
+    // 2. 최근 수정된 게시글 조회
+    public List<Post> getRecentlyModifiedPosts(int limit) {
+        Pageable pageable = PageRequest.of(0, limit,
+                Sort.by("updatedAt").descending());
+        return postRepository.findAll(pageable).getContent();
+    }
+
     // 1. 페이징된 게시글 목록 조회
     public Page<Post> getPostsPage(int page, int size, String sortBy, String direction) {
         // Sort 객체 생성 (정렬 기준과 방향)
