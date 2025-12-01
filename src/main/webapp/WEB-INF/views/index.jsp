@@ -22,7 +22,7 @@
 <h3>사용자 관련</h3>
 <a href="<%= request.getContextPath() %>/profile">내 프로필</a><br>
 <a href="<%= request.getContextPath() %>/users/search">사용자 검색</a><br>
-<a href="<%= request.getContextPath() %>/users/active">활동적인 사용자</a><br>
+<a href="<%= request.getContextPath() %>/users/active">활성 사용자</a><br>
 <h3>계정</h3>
 <a href="<%= request.getContextPath() %>/logout">로그아웃</a><br>
 <% } %>
