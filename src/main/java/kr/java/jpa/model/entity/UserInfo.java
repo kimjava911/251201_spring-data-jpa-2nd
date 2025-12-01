@@ -13,7 +13,8 @@ import java.util.List;
 @NoArgsConstructor @AllArgsConstructor @Builder // 생성자 관련
 @Getter @Setter // 접근자
 //@ToString // 출력 -> 순환참조
-public class UserInfo {
+//public class UserInfo {
+public class UserInfo extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,13 +25,13 @@ public class UserInfo {
     @Column(length = 100)
     private String email;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
-    @PrePersist
-    public void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
+//    @Column(name = "created_at", updatable = false)
+//    private LocalDateTime createdAt;
+//
+//    @PrePersist
+//    public void onCreate() {
+//        this.createdAt = LocalDateTime.now();
+//    }
 
     // OneToOne + UserLogin -> 1:1 연관관계 인식
     @OneToOne(fetch = FetchType.LAZY)
@@ -52,7 +53,8 @@ public class UserInfo {
                 "id=" + id +
                 ", nickname='" + nickname + '\'' +
                 ", email='" + email + '\'' +
-                ", createdAt=" + createdAt +
+//                ", createdAt=" + createdAt +
+                ", createdAt=" + getCreatedAt() +
                 '}';
     }
 

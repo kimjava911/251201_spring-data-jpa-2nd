@@ -12,7 +12,8 @@ import java.util.List;
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
 //@ToString
-public class Post {
+//public class Post {
+public class Post extends BaseEntity { // 작성자/수정자, 작성일시/수정일시
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,13 +30,13 @@ public class Post {
     @Column(name = "like_count")
     private Integer likeCount = 0;
 
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+//    @Column(name = "created_at", updatable = false)
+//    private LocalDateTime createdAt;
+//
+//    @PrePersist
+//    protected void onCreate() {
+//        createdAt = LocalDateTime.now();
+//    }
 
     // N:1 연관관계
     @ManyToOne(fetch = FetchType.LAZY)
