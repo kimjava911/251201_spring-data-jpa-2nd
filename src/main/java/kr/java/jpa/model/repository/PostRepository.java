@@ -48,7 +48,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // findBy / CreatedAt / Between / OrderBy / CreatedAt / Desc
 
     // 3. 좋아요 수가 특정 값 이상인 게시글 조회
-    List<Post> findByLikeCountGreaterThanEqualOrderByCreatedAtDesc(Integer minCount);
+    List<Post> findByLikeCountGreaterThanEqualOrderByLikeCountDesc(Integer minCount);
     // findBy
     // LikeCount
     // GreaterThanEqual : GTE -> GreaterThan (초과, >), LessThan (미만, <)

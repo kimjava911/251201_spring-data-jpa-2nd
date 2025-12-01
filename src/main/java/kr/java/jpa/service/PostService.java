@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -82,5 +83,37 @@ public class PostService {
     public Post getPostDetail(Long id) {
         return  postRepository.findByIdWithDetails(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다"));
+    }
+
+    // Query Method -> Service Layer
+
+    // 1. 통합 검색 (제목 or 내용)
+    public List<Post> searchByTitleOrContent(String keyword) {
+        return postRepository
+                .findByTitleContainingOrContentContainingOrderByCreatedAtDesc(
+                        keyword, keyword
+                ); // 2번 언급되는게 거슬린다 -> jpql
+    }
+    // 2. 기간별 게시글 조회
+    public List<Post> searchByCreatedAt(LocalDateTime start, LocalDateTime end) {
+        return postRepository
+                .findByCreatedAtBetweenOrderByCreatedAtDesc(start, end);
+    }
+    // 3. 인기 게시글 조회 (좋아요 수 기준)
+    public List<Post> getPopularPosts(Integer minLikes) {
+        return postRepository
+                .findByLikeCountGreaterThanEqualOrderByLikeCountDesc(minLikes);
+    }
+    // 4. 고급 검색 (키워드 + 최소 좋아요 수)
+    public List<Post> advancedSearch(String keyword, Integer minLikes) {
+        return postRepository.searchPosts(keyword, minLikes);
+    }
+    // 5. 게시글 존재 여부 확인
+    public boolean existsPostByTitle(String title) {
+        return postRepository.existsByTitle(title);
+    }
+    // 6. 사용자별 게시글 개수 조회
+    public long countUserPosts(Long userId) {
+        return postRepository.countByAuthorId(userId);
     }
 }

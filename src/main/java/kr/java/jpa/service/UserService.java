@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -75,5 +77,20 @@ public class UserService {
 
     public UserInfo getUserInfoWithLikedPosts(Long id) {
         return userInfoRepository.findAuthorWithLikedPosts(id);
+    }
+
+    // 1. 닉네임으로 사용자 검색
+    public List<UserInfo> searchUsersByNickname(String keyword) {
+        return userInfoRepository.findByNicknameContaining(keyword);
+    }
+
+    // 2. 활동적인 사용자 조회 (게시글 많은 순)
+    public List<UserInfo> getActiveUsers(int minPosts) {
+        return userInfoRepository.findActiveUsers(minPosts);
+    }
+
+    // 3. 기간별 신규 가입자 조회
+    public List<UserInfo> getNewUsers(LocalDateTime start, LocalDateTime end) {
+        return userInfoRepository.findByUserRegisteredBetween(start, end);
     }
 }
