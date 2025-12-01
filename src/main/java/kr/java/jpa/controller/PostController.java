@@ -1,10 +1,12 @@
 package kr.java.jpa.controller;
 
 import jakarta.servlet.http.HttpSession;
+import kr.java.jpa.model.entity.Post;
 import kr.java.jpa.model.entity.UserInfo;
 import kr.java.jpa.service.PostService;
 import kr.java.jpa.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -135,5 +137,51 @@ public class PostController {
         model.addAttribute("keyword", keyword);
         model.addAttribute("minLikes", minLikes);
         return "post/list";
+    }
+
+    // 1. 페이징된 게시글 목록
+    @GetMapping("/page")
+    public String postListPaging(
+            HttpSession session,
+            @RequestParam(defaultValue = "0") int page,         // 현재 페이지 (0부터 시작)
+            @RequestParam(defaultValue = "10") int size,        // 페이지 크기
+            @RequestParam(defaultValue = "createdAt") String sortBy,    // 정렬 기준
+            @RequestParam(defaultValue = "desc") String direction,      // 정렬 방향
+            Model model
+    ) {
+        UserInfo loginUser = (UserInfo) session.getAttribute("userInfo");
+        if (loginUser == null) return "redirect:/login";
+
+        // 페이징된 게시글 조회
+        Page<Post> postsPage = postService.getPostsPage(page, size, sortBy, direction);
+        System.out.println("sortBy = " + sortBy);
+        model.addAttribute("postsPage", postsPage);
+        model.addAttribute("userInfo", loginUser);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("sortBy", sortBy);
+        model.addAttribute("direction", direction);
+
+        return "post/list-paging";
+    }
+
+    // 2. 검색 + 페이징
+    @GetMapping("/search/page")
+    public String searchPostsPaging(
+            HttpSession session,
+            @RequestParam String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            Model model
+    ) {
+        UserInfo loginUser = (UserInfo) session.getAttribute("userInfo");
+        if (loginUser == null) return "redirect:/login";
+
+        Page<Post> postsPage = postService.searchPostsPage(keyword, page, size);
+
+        model.addAttribute("postsPage", postsPage);
+        model.addAttribute("userInfo", loginUser);
+        model.addAttribute("keyword", keyword);
+
+        return "post/search-paging";
     }
 }

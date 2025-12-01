@@ -31,10 +31,13 @@ public class PostService {
     public Page<Post> getPostsPage(int page, int size, String sortBy, String direction) {
         // Sort 객체 생성 (정렬 기준과 방향)
         // equalsIgnoreCase -> 대소문자 구분 X
+        System.out.println("PostService.getPostsPage");
+        System.out.println("sortBy = " + sortBy);
         Sort sort = direction.equalsIgnoreCase("asc") ?
                 Sort.by(sortBy).ascending() :
                 Sort.by(sortBy).descending(); // 기본설정을 이걸로 두겠다
-        // ID 기준
+
+        // 입력한 속성
 
         // Pageable 객체 생성 (페이지 번호, 크기, 정렬)
         Pageable pageable = PageRequest.of(page, size, sort);

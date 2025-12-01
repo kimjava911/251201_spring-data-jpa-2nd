@@ -18,7 +18,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // import org.springframework.data.domain.Page;
 
     // 전체 게시글 조회
-    @Query("SELECT p FROM Post p JOIN FETCH p.author ORDER BY p.createdAt DESC")
+//    @Query("SELECT p FROM Post p JOIN FETCH p.author ORDER BY p.createdAt DESC")
+    @Query("SELECT p FROM Post p JOIN FETCH p.author") // ORDER BY면 Sort 무시됨
     Page<Post> findAllWithAuthor(Pageable pageable); // 오버로딩
 
     // 제목 검색 + 페이징
